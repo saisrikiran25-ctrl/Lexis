@@ -276,6 +276,43 @@ Analyze the provided legal document and return a structured JSON response with E
 
 Respond ONLY with valid JSON. No preamble, no markdown fences, no explanation outside the JSON object. Generate at least 5-8 clauses covering different categories. Make the analysis thorough and practical.`;
 
+function cleanJSONString(jsonString) {
+  let insideString = false;
+  let result = '';
+  for (let i = 0; i < jsonString.length; i++) {
+    const char = jsonString[i];
+    if (char === '"') {
+      let backslashes = 0;
+      for (let j = i - 1; j >= 0; j--) {
+        if (jsonString[j] === '\\') {
+          backslashes++;
+        } else {
+          break;
+        }
+      }
+      if (backslashes % 2 === 0) {
+        insideString = !insideString;
+      }
+      result += char;
+    } else if (insideString) {
+      if (char === '\n') {
+        result += '\\n';
+      } else if (char === '\r') {
+        result += '\\r';
+      } else if (char === '\t') {
+        result += '\\t';
+      } else if (char.charCodeAt(0) < 32) {
+        result += '\\u' + ('0000' + char.charCodeAt(0).toString(16)).slice(-4);
+      } else {
+        result += char;
+      }
+    } else {
+      result += char;
+    }
+  }
+  return result;
+}
+
 async function analyzePolicy(policyText, mode) {
   const apiKey = ["sk", "or", "v1", "307afdc63ad39b467638b85c6ed4ee2c09a97951ca65ab8e8744fbfa64b09401"].join("-");
 
@@ -306,7 +343,8 @@ async function analyzePolicy(policyText, mode) {
   if (!response.ok) throw new Error(`API error: ${response.status}`);
   const data = await response.json();
   const raw = data.choices?.[0]?.message?.content || "{}";
-  return JSON.parse(raw.replace(/```json|```/g, "").trim());
+  const cleaned = cleanJSONString(raw.replace(/```json|```/g, "").trim());
+  return JSON.parse(cleaned);
 }
 
 // ─── SHARED COMPONENTS ────────────────────────────────────────────────────────
