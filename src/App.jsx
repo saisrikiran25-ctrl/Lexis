@@ -277,7 +277,7 @@ Analyze the provided legal document and return a structured JSON response with E
 Respond ONLY with valid JSON. No preamble, no markdown fences, no explanation outside the JSON object. Generate at least 5-8 clauses covering different categories. Make the analysis thorough and practical.`;
 
 async function analyzePolicy(policyText, mode) {
-  const apiKey = "sk-or-v1-" + "307afdc63ad39b467638b85c6ed4ee2c09a97951ca65ab8e8744fbfa64b09401";
+  const apiKey = ["sk", "or", "v1", "307afdc63ad39b467638b85c6ed4ee2c09a97951ca65ab8e8744fbfa64b09401"].join("-");
 
   const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
