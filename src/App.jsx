@@ -345,14 +345,20 @@ async function analyzePolicy(policyText, mode) {
   };
 
   let response;
+  let useFallback = false;
   try {
     response = await makeRequest(primaryKey);
     if (!response.ok) {
-      console.warn(`Primary API call failed with status ${response.status}. Retrying with fallback key...`);
-      response = await makeRequest(fallbackKey);
+      console.warn(`Primary API call failed with status ${response.status}.`);
+      useFallback = true;
     }
   } catch (error) {
-    console.warn("Primary API call encountered network error. Retrying with fallback key...", error);
+    console.warn("Primary API call encountered network error.", error);
+    useFallback = true;
+  }
+
+  if (useFallback) {
+    console.warn("Retrying API call with fallback key...");
     response = await makeRequest(fallbackKey);
   }
 
