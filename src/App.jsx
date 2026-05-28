@@ -307,6 +307,7 @@ async function analyzePolicy(policyText, mode) {
           content: `MODE: ${mode.toUpperCase()}\n\nAnalyze this legal document:\n\n${policyText}`
         }
       ],
+      max_tokens: 4000,
       response_format: { type: "json_object" }
     })
   });
@@ -926,7 +927,7 @@ function ResultsPanel({ results, mode }) {
 
           {/* Clauses */}
           <div>
-            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 700, marginBottom: 14, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 12 }}>
+            <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, marginBottom: 14, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 12 }}>
               Clause Breakdown ({results.clauses?.length || 0} clauses analyzed)
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
