@@ -448,7 +448,7 @@ function Footer() {
             </p>
           </div>
           <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-            {[['Privacy', 'about'], ['Terms', 'about'], ['About', 'about'], ['How it works', 'how-it-works']].map(([l, p]) => (
+            {[['Privacy', 'about'], ['About', 'about'], ['How it works', 'how-it-works']].map(([l, p]) => (
               <button key={l} onClick={() => dispatch({ type: 'SET_PAGE', payload: p })} style={{
                 background: 'none', border: 'none', cursor: 'pointer',
                 fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--text-secondary)',
@@ -462,7 +462,7 @@ function Footer() {
         </div>
         <Disclaimer compact />
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-muted)', marginTop: 16 }}>
-          © 2025 LEXIS. All rights reserved.
+          © 2026 LEXIS. All rights reserved.
         </p>
       </div>
     </footer>
