@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useCallback, useReducer, createContext, us
 // ─── GLOBAL STYLES ───────────────────────────────────────────────────────────
 const GlobalStyles = () => (
   <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -24,7 +24,7 @@ const GlobalStyles = () => (
       --accent-red-dim: rgba(255,74,74,0.15);
       --accent-amber: #FFB84A;
       --accent-amber-dim: rgba(255,184,74,0.15);
-      --font-display: 'Syne', sans-serif;
+      --font-display: 'Space Grotesk', sans-serif;
       --font-mono: 'DM Mono', monospace;
       --font-body: 'DM Sans', sans-serif;
       --radius: 12px;
@@ -373,7 +373,7 @@ function Navbar() {
         transition: 'all 0.3s ease',
       }}>
         <button onClick={() => nav('landing')} style={{ background: 'none', border: 'none', cursor: 'pointer', position: 'relative' }}>
-          <span style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+          <span style={{ fontFamily: "'Syne', sans-serif", fontSize: 22, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
             LEX<span style={{ color: 'var(--accent-mint)' }}>IS</span>
           </span>
           <span style={{ position: 'absolute', bottom: -2, left: 0, width: '100%', height: 1, background: 'var(--accent-mint)', transform: 'scaleX(0)', transition: 'transform 0.2s', transformOrigin: 'left' }} className="nav-underline" />
@@ -439,7 +439,7 @@ function Footer() {
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 24, marginBottom: 32 }}>
           <div>
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 800, marginBottom: 8 }}>
+            <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 20, fontWeight: 800, marginBottom: 8 }}>
               LEX<span style={{ color: 'var(--accent-mint)' }}>IS</span>
             </div>
             <p style={{ fontSize: 13, color: 'var(--text-secondary)', maxWidth: 300 }}>
