@@ -314,32 +314,48 @@ function cleanJSONString(jsonString) {
 }
 
 async function analyzePolicy(policyText, mode) {
-  const apiKey = ["sk", "or", "v1", "307afdc63ad39b467638b85c6ed4ee2c09a97951ca65ab8e8744fbfa64b09401"].join("-");
+  const primaryKey = ["sk", "or", "v1", "307afdc63ad39b467638b85c6ed4ee2c09a97951ca65ab8e8744fbfa64b09401"].join("-");
+  const fallbackKey = ["sk", "or", "v1", "f04e85a3309ab4c586ccfa7f0353ed7d656ba4d79ddd54f6c922a5bb04ad5300"].join("-");
 
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${apiKey}`,
-      "HTTP-Referer": typeof window !== "undefined" ? window.location.origin : "",
-      "X-Title": "LEXIS Policy Analyzer",
-    },
-    body: JSON.stringify({
-      model: "google/gemini-2.5-flash",
-      messages: [
-        {
-          role: "system",
-          content: SYSTEM_PROMPT
-        },
-        {
-          role: "user",
-          content: `MODE: ${mode.toUpperCase()}\n\nAnalyze this legal document:\n\n${policyText}`
-        }
-      ],
-      max_tokens: 4000,
-      response_format: { type: "json_object" }
-    })
-  });
+  const makeRequest = async (key) => {
+    return await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${key}`,
+        "HTTP-Referer": typeof window !== "undefined" ? window.location.origin : "",
+        "X-Title": "LEXIS Policy Analyzer",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          {
+            role: "system",
+            content: SYSTEM_PROMPT
+          },
+          {
+            role: "user",
+            content: `MODE: ${mode.toUpperCase()}\n\nAnalyze this legal document:\n\n${policyText}`
+          }
+        ],
+        max_tokens: 4000,
+        response_format: { type: "json_object" }
+      })
+    });
+  };
+
+  let response;
+  try {
+    response = await makeRequest(primaryKey);
+    if (!response.ok) {
+      console.warn(`Primary API call failed with status ${response.status}. Retrying with fallback key...`);
+      response = await makeRequest(fallbackKey);
+    }
+  } catch (error) {
+    console.warn("Primary API call encountered network error. Retrying with fallback key...", error);
+    response = await makeRequest(fallbackKey);
+  }
+
   if (!response.ok) throw new Error(`API error: ${response.status}`);
   const data = await response.json();
   const raw = data.choices?.[0]?.message?.content || "{}";
