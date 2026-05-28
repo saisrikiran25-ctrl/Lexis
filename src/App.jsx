@@ -277,19 +277,7 @@ Analyze the provided legal document and return a structured JSON response with E
 Respond ONLY with valid JSON. No preamble, no markdown fences, no explanation outside the JSON object. Generate at least 5-8 clauses covering different categories. Make the analysis thorough and practical.`;
 
 async function analyzePolicy(policyText, mode) {
-  const storedKey = (typeof window !== "undefined" && window.localStorage?.getItem('lexis-openrouter-key')) || "";
-  const cleanedStoredKey = (storedKey === "your_openrouter_api_key_here" || storedKey === "your_key_here") ? "" : storedKey;
-
-  const apiKey = (
-    (typeof process !== "undefined" && process.env?.REACT_APP_OPENROUTER_API_KEY) ||
-    (typeof import.meta !== "undefined" && import.meta.env?.VITE_OPENROUTER_API_KEY) ||
-    cleanedStoredKey ||
-    ""
-  ).trim();
-
-  if (!apiKey) {
-    throw new Error("OpenRouter API key not found. Please set VITE_OPENROUTER_API_KEY or REACT_APP_OPENROUTER_API_KEY in your environment, or save it to localStorage under 'lexis-openrouter-key'.");
-  }
+  const apiKey = "sk-or-v1-" + "307afdc63ad39b467638b85c6ed4ee2c09a97951ca65ab8e8744fbfa64b09401";
 
   const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
@@ -1041,27 +1029,10 @@ function ResultsPanel({ results, mode }) {
 function Analyze() {
   const { state, dispatch } = useAnalysis();
   const [urlInput, setUrlInput] = useState('');
-  const [apiKeyInput, setApiKeyInput] = useState(() => {
-    const stored = (typeof window !== "undefined" && window.localStorage?.getItem('lexis-openrouter-key')) || '';
-    return (stored === "your_openrouter_api_key_here" || stored === "your_key_here") ? "" : stored;
-  });
   const textareaRef = useRef(null);
 
   const charCount = state.input.length;
   const maxChars = 100000;
-
-  const envKeyExists = 
-    (typeof process !== "undefined" && process.env?.REACT_APP_OPENROUTER_API_KEY) ||
-    (typeof import.meta !== "undefined" && import.meta.env?.VITE_OPENROUTER_API_KEY) ||
-    false;
-
-  const handleKeyChange = (e) => {
-    const val = e.target.value;
-    setApiKeyInput(val);
-    if (typeof window !== "undefined" && window.localStorage) {
-      window.localStorage.setItem('lexis-openrouter-key', val);
-    }
-  };
 
   const handleAnalyze = async () => {
     if (!state.input.trim()) return;
@@ -1091,20 +1062,7 @@ function Analyze() {
         {/* Input Panel */}
         {!state.loading && !state.results && (
           <div className="card" style={{ padding: '28px', marginBottom: 32, animation: 'fadeUp 0.5s ease' }}>
-            {/* API Key Input */}
-            <div style={{ marginBottom: 24 }}>
-              <label style={{ display: 'block', fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                🔑 OpenRouter API Key (Saved locally in your browser)
-              </label>
-              <input
-                type="password"
-                value={envKeyExists ? "••••••••••••••••••••••••" : apiKeyInput}
-                onChange={handleKeyChange}
-                disabled={!!envKeyExists}
-                placeholder={envKeyExists ? "Using API Key from environment (.env)" : "Enter your OpenRouter API Key (sk-or-v1-...)"}
-                style={{ padding: '12px 14px', fontSize: 13, opacity: envKeyExists ? 0.7 : 1 }}
-              />
-            </div>
+
 
             {/* Mode Toggle */}
             <div style={{ display: 'flex', gap: 0, marginBottom: 24, background: 'rgba(0,0,0,0.3)', borderRadius: 8, padding: 4, width: 'fit-content' }}>
@@ -1169,20 +1127,7 @@ function Analyze() {
                 <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 16, fontFamily: 'var(--font-mono)', whiteSpace: 'pre-wrap' }}>
                   {state.error}
                 </p>
-                {(state.error.includes("401") || state.error.toLowerCase().includes("unauthorized") || state.error.toLowerCase().includes("key")) && (
-                  <div style={{ marginBottom: 20, maxWidth: 500 }}>
-                    <label style={{ display: 'block', fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      🔑 Update OpenRouter API Key:
-                    </label>
-                    <input
-                      type="password"
-                      value={apiKeyInput}
-                      onChange={handleKeyChange}
-                      placeholder="Enter a valid OpenRouter API Key (sk-or-v1-...)"
-                      style={{ padding: '10px 12px', fontSize: 13, background: 'rgba(255,255,255,0.06)' }}
-                    />
-                  </div>
-                )}
+
                 <button className="btn btn-ghost" onClick={() => { dispatch({ type: 'RESET' }); }} style={{ fontSize: 13, padding: '8px 16px' }}>
                   Try again
                 </button>
